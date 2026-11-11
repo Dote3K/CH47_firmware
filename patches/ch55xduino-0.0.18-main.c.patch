@@ -1,0 +1,41 @@
+--- a/cores/ch55xduino/main.c
++++ b/cores/ch55xduino/main.c
+@@ -22,10 +22,13 @@
+ // make sure to define prototypes for all used interrupts
+ // USBInterrupt does not need to saves the context
+ void USBInterrupt(void);
++// CH47 (CH55x_QMK_Lite README tip 8): unused ISRs removed to free ROM.
++#if 0
+ // Timer2Interrupt NEEDs to saves the context
+ void Timer2Interrupt(void) __interrupt(INT_NO_TMR2);
+ // GPIOInterrupt NEEDs to saves the context
+ void GPIOInterrupt(void) __interrupt(INT_NO_GPIO);
++#endif
+ 
+ // unsigned char runSerialEvent;
+ void DeviceUSBInterrupt(void) __interrupt(INT_NO_USB) {
+@@ -42,6 +45,7 @@
+ // located in wiring.c, using register bank 1
+ void Timer0Interrupt(void) __interrupt(INT_NO_TMR0) __using(1);
+ 
++#if 0  // CH47: unused UART ISRs
+ void Uart0_ISR(void) __interrupt(INT_NO_UART0) {
+   if (RI) {
+     uart0IntRxHandler();
+@@ -85,11 +89,16 @@
+ #endif
+ }
+ 
++#endif
++
+ typedef void (*voidFuncPtr)(void);
++#if 0  // CH47: unused INT0/INT1 ISRs
+ extern __xdata voidFuncPtr intFunc[];
+ void INT0_ISR(void) __interrupt(INT_NO_INT0) { intFunc[0](); }
+ void INT1_ISR(void) __interrupt(INT_NO_INT1) { intFunc[1](); }
+ 
++#endif
++
+ #if defined(CH551) || defined(CH552)
+ __xdata voidFuncPtr touchKeyHandler = NULL;
+ void TOUCHKEY_ISR(void) __interrupt(INT_NO_TKEY) {
